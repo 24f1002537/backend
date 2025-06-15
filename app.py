@@ -67,7 +67,7 @@ def answer(question: str, context: str = "", image_file=None):
         question += f"\n{image_description}"
 
     question_embedding = get_embeddings([question])[0]
-    chunks, embeddings = load_embeddings("embeddings.npz")
+    chunks, embeddings = load_embeddings("embeddings_compressed.npz")
     similarities = np.dot(embeddings, question_embedding) / (
         np.linalg.norm(embeddings, axis=1) * np.linalg.norm(question_embedding)
     )
