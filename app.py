@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, json, request, render_template, jsonify
 import os
 import numpy as np
 import base64
@@ -6,6 +6,7 @@ from PIL import Image
 from io import BytesIO
 import google.generativeai as genai
 from flask_cors import CORS
+import markdown_to_json
 
 
 app = Flask(__name__)
@@ -87,6 +88,7 @@ def answer(question: str,image_file=None):
 @app.route("/api", methods=["GET","POST"])
 def index():
     answer_text = None
+    data = {}
     if request.method == "POST":
         question = request.form.get("question", "")
         image_file = request.files.get("image", None)
@@ -94,8 +96,21 @@ def index():
             answer_text = answer(question,image_file)
         except Exception as e:
             answer_text = f"Error: {e}"
-        return jsonify({"answer": answer_text})
-    return render_template("index.html", answer=answer_text)     
+        with open('input.md', 'w', encoding='utf-8') as file:
+            file.write(answer_text)
+        input_filename = 'input.md'
+        output_filename = 'output.txt'
+
+        with open(input_filename, 'r') as file:
+            content = file.read()
+
+        # Remove all occurrences of '`' and 'json'
+        content_cleaned = content.replace('`', '').replace('json', '')
+
+        with open(output_filename, 'w', encoding='utf-8') as file:
+            file.write(content_cleaned)
+        return content_cleaned
+    return render_template("index.html", answer=answer_text)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
