@@ -5,8 +5,11 @@ import base64
 from PIL import Image
 from io import BytesIO
 import google.generativeai as genai
+from flask_cors import CORS
+
 
 app = Flask(__name__)
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 genai.configure(api_key=os.getenv("GOOGLE_API_KEY"))
 
