@@ -86,7 +86,7 @@ def answer(question: str, context: str = "", image_file=None):
     response = generate_llm_response(question, context=used_context)
     return response
 
-@app.route("/api", methods=["GET", "POST"])
+@app.route("/api", methods=["GET"])
 def index():
     answer_text = None
     if request.method == "POST":
@@ -97,7 +97,18 @@ def index():
             answer_text = answer(question, context, image_file)
         except Exception as e:
             answer_text = f"Error: {e}"
-    return jsonify({"answer": answer_text}) 
+    return render_template("index.html")
+@app.route("/api", methods=["POST"])  
+def api_answer():
+    data = request.json
+    question = data.get("question", "")
+    context = data.get("context", "")
+    image_file = request.files.get("image", None)
+    try:
+        answer_text = answer(question, context, image_file)
+        return jsonify({"answer": answer_text})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500   
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
