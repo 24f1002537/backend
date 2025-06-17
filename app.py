@@ -83,7 +83,7 @@ def answer(question: str, context: str = "", image_file=None):
     response = generate_llm_response(question, context=used_context)
     return response
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/api", methods=["GET", "POST"])
 def index():
     answer_text = None
     if request.method == "POST":
