@@ -91,7 +91,7 @@ def index():
         question = request.form.get("question", "")
         image_file = request.files.get("image", None)
         try:
-            answer_text = answer(question, image_file)
+            answer_text = answer(question,image_file)
         except Exception as e:
             answer_text = f"Error: {e}"
         return jsonify({"answer": answer_text})
