@@ -109,7 +109,7 @@ def index():
 
         with open(output_filename, 'w', encoding='utf-8') as file:
             file.write(content_cleaned)
-        return content_cleaned
+        return json.loads(content_cleaned)
     return render_template("index.html", answer=answer_text)
 
 if __name__ == "__main__":
