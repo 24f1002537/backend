@@ -61,7 +61,7 @@ def generate_llm_response(question: str, context: str = None):
     )
     return response.text
 
-def answer(question: str, context: str = "", image_file=None):
+def answer(question: str,image_file=None):
     # If image is uploaded, convert to base64 and get description
     if image_file and image_file.filename:
         image_bytes = image_file.read()
@@ -78,10 +78,8 @@ def answer(question: str, context: str = "", image_file=None):
     top_chunks = [chunks[i] for i in top_indices]
 
     # Use provided context if available
-    if context:
-        used_context = context
-    else:
-        used_context = "\n\n".join(top_chunks)
+    
+    used_context = "\n\n".join(top_chunks)
 
     response = generate_llm_response(question, context=used_context)
     return response
@@ -91,10 +89,9 @@ def index():
     answer_text = None
     if request.method == "POST":
         question = request.form.get("question", "")
-        context = request.form.get("context", "")
         image_file = request.files.get("image", None)
         try:
-            answer_text = answer(question, context, image_file)
+            answer_text = answer(question, image_file)
         except Exception as e:
             answer_text = f"Error: {e}"
         return jsonify({"answer": answer_text})
