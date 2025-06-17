@@ -97,7 +97,7 @@ def index():
             answer_text = answer(question, context, image_file)
         except Exception as e:
             answer_text = f"Error: {e}"
-    return render_template("index.html", answer=answer_text)
+    return jsonify({"answer": answer_text}) 
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
